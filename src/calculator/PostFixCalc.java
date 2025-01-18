@@ -5,8 +5,14 @@ import java.io.IOException;
 import java.util.Stack;
 import java.io.File; 
 
-
-public class PostFixCalc {/**
+public class PostFixCalc {
+    // Add just the most important error messages as constants
+    private static final String ERROR_NULL_EMPTY = "Expression cannot be null or empty";
+    private static final String ERROR_INSUFFICIENT_OPERANDS = "Invalid: insufficient operands";
+    private static final String ERROR_TOO_MANY_OPERANDS = "Invalid: too many operands";
+    private static final String ERROR_DIVISION_BY_ZERO = "Division by zero";
+    
+    /**
      * Evaluates a postfix expression and returns the result
      * @param postfixExpression The postfix expression to evaluate
      * @return The result of the evaluation
@@ -14,7 +20,7 @@ public class PostFixCalc {/**
      */
     public int evaluatePostfix(String postfixExpression) {
         if (postfixExpression == null || postfixExpression.trim().isEmpty()) {
-            throw new IllegalArgumentException("Expression cannot be null or empty");
+            throw new IllegalArgumentException(ERROR_NULL_EMPTY);
         }
 
         Stack<Integer> stack = new Stack<>();
@@ -27,7 +33,7 @@ public class PostFixCalc {/**
 
                 if (isOperator(token)) {
                     if (stack.size() < 2) {
-                        throw new IllegalArgumentException("Invalid: insufficient operands");
+                        throw new IllegalArgumentException(ERROR_INSUFFICIENT_OPERANDS);
                     }
                     int operand2 = stack.pop();
                     int operand1 = stack.pop();
@@ -43,7 +49,7 @@ public class PostFixCalc {/**
             }
 
             if (stack.size() != 1) {
-                throw new IllegalArgumentException("Invalid: too many operands");
+                throw new IllegalArgumentException(ERROR_TOO_MANY_OPERANDS);
             }
 
             return stack.pop();
@@ -62,7 +68,7 @@ public class PostFixCalc {/**
     }
 
     /**
-     * Performs the  operation
+     * Performs the operation
      */
     private int performOperation(int operand1, int operand2, String operator) {
         switch (operator) {
@@ -71,7 +77,7 @@ public class PostFixCalc {/**
             case "*": return operand1 * operand2;
             case "/":
                 if (operand2 == 0) {
-                    throw new ArithmeticException("Division by zero");
+                    throw new ArithmeticException(ERROR_DIVISION_BY_ZERO);
                 }
                 return operand1 / operand2;
             case "%":
@@ -107,7 +113,7 @@ public class PostFixCalc {/**
     }
 
     public static void main(String[] args) {
-    	PostFixCalc calculator = new PostFixCalc();
+        PostFixCalc calculator = new PostFixCalc();
 
         // Test Case 1: Single-digit 
         String expr1 = "5 3 + 2 *";
@@ -163,6 +169,5 @@ public class PostFixCalc {/**
         String filePath = "expressions.txt";  // file in project root
         System.out.println("Testing file at: " + new File(filePath).getAbsolutePath());
         calculator.evaluateFromFile(filePath);
-
-
-}}
+    }
+}
